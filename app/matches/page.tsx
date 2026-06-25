@@ -3,24 +3,50 @@ import { prisma } from "@/lib/prisma";
 import { calculateMatchScore } from "@/lib/match-score";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+type Artist = {
+  id: string;
+  name: string;
+  area: string;
+  tags: string[];
+};
+
+type Opportunity = {
+  id: string;
+  title: string;
+  institution: string;
+  tags: string[];
+};
+
+type GeneratedMatch = {
+  artistId: string;
+  opportunityId: string;
+  artist: string;
+  artistArea: string;
+  opportunity: string;
+  institution: string;
+  score: number;
+  matchedTags: string[];
+  missingTags: string[];
+};
 
 export default async function MatchesPage() {
-  const [artists, opportunities] = await Promise.all([
-    prisma.artist.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    }),
-    prisma.opportunity.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    }),
-  ]);
+  const artists = (await prisma.artist.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  })) as Artist[];
 
-  const generatedMatches = artists
-    .flatMap((artist) =>
-      opportunities.map((opportunity) => {
+  const opportunities = (await prisma.opportunity.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  })) as Opportunity[];
+
+  const generatedMatches: GeneratedMatch[] = artists
+    .flatMap((artist: Artist) =>
+      opportunities.map((opportunity: Opportunity) => {
         const result = calculateMatchScore(artist.tags, opportunity.tags);
 
         return {
@@ -36,8 +62,8 @@ export default async function MatchesPage() {
         };
       }),
     )
-    .filter((match) => match.score > 0)
-    .sort((a, b) => b.score - a.score);
+    .filter((match: GeneratedMatch) => match.score > 0)
+    .sort((a: GeneratedMatch, b: GeneratedMatch) => b.score - a.score);
 
   return (
     <main className="min-h-screen bg-[#0B0B12] text-white">
@@ -60,9 +86,11 @@ export default async function MatchesPage() {
         <section className="mb-10 grid gap-4 md:grid-cols-3">
           <article className="rounded-3xl border border-zinc-800 bg-zinc-950 p-6">
             <p className="text-sm text-zinc-400">Artistas no banco</p>
+
             <strong className="mt-3 block text-4xl font-bold">
               {artists.length}
             </strong>
+
             <p className="mt-2 text-sm text-zinc-500">
               Perfis culturais cadastrados
             </p>
@@ -70,9 +98,11 @@ export default async function MatchesPage() {
 
           <article className="rounded-3xl border border-zinc-800 bg-zinc-950 p-6">
             <p className="text-sm text-zinc-400">Editais no banco</p>
+
             <strong className="mt-3 block text-4xl font-bold">
               {opportunities.length}
             </strong>
+
             <p className="mt-2 text-sm text-zinc-500">
               Oportunidades disponíveis
             </p>
@@ -80,9 +110,11 @@ export default async function MatchesPage() {
 
           <article className="rounded-3xl border border-zinc-800 bg-zinc-950 p-6">
             <p className="text-sm text-zinc-400">Matches encontrados</p>
+
             <strong className="mt-3 block text-4xl font-bold">
               {generatedMatches.length}
             </strong>
+
             <p className="mt-2 text-sm text-zinc-500">
               Recomendações com score maior que zero
             </p>
@@ -128,7 +160,7 @@ export default async function MatchesPage() {
           </div>
         ) : (
           <div className="space-y-5">
-            {generatedMatches.map((match) => (
+            {generatedMatches.map((match: GeneratedMatch) => (
               <article
                 key={`${match.artistId}-${match.opportunityId}`}
                 className="rounded-3xl border border-zinc-800 bg-zinc-950 p-6"
@@ -166,7 +198,7 @@ export default async function MatchesPage() {
                         </p>
 
                         <div className="flex flex-wrap gap-2">
-                          {match.matchedTags.map((tag) => (
+                          {match.matchedTags.map((tag: string) => (
                             <span
                               key={tag}
                               className="rounded-full bg-green-500/10 px-3 py-1 text-xs text-green-300"
@@ -184,7 +216,7 @@ export default async function MatchesPage() {
 
                         <div className="flex flex-wrap gap-2">
                           {match.missingTags.length > 0 ? (
-                            match.missingTags.map((tag) => (
+                            match.missingTags.map((tag: string) => (
                               <span
                                 key={tag}
                                 className="rounded-full bg-yellow-500/10 px-3 py-1 text-xs text-yellow-300"
