@@ -2,7 +2,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#0B0B12] text-white">
       <section className="mx-auto flex min-h-screen max-w-7xl flex-col px-6 py-8">
-        <header className="flex items-center justify-between">
+        <header className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">
               Cultura Conecta
@@ -12,15 +12,33 @@ export default function Home() {
             </p>
           </div>
 
-          <nav className="hidden gap-6 text-sm text-zinc-300 md:flex">
-            <a href="#problema" className="hover:text-white">
-              Problema
+          <nav className="flex flex-wrap gap-3 text-sm">
+            <a
+              href="/dashboard"
+              className="rounded-xl border border-zinc-800 px-4 py-2 text-zinc-300 transition hover:border-purple-500 hover:text-white"
+            >
+              Dashboard
             </a>
-            <a href="#solucao" className="hover:text-white">
-              Solução
+
+            <a
+              href="/artistas"
+              className="rounded-xl border border-zinc-800 px-4 py-2 text-zinc-300 transition hover:border-purple-500 hover:text-white"
+            >
+              Artistas
             </a>
-            <a href="#match" className="hover:text-white">
-              Match
+
+            <a
+              href="/editais"
+              className="rounded-xl border border-zinc-800 px-4 py-2 text-zinc-300 transition hover:border-purple-500 hover:text-white"
+            >
+              Editais
+            </a>
+
+            <a
+              href="/matches"
+              className="rounded-xl border border-zinc-800 px-4 py-2 text-zinc-300 transition hover:border-purple-500 hover:text-white"
+            >
+              Matches
             </a>
           </nav>
         </header>
@@ -43,17 +61,33 @@ export default function Home() {
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <a
-                href="#match"
+                href="/artistas"
                 className="rounded-xl bg-purple-500 px-6 py-3 text-center font-semibold text-white transition hover:bg-purple-400"
               >
-                Ver matchmaking
+                Cadastrar artista
               </a>
 
               <a
-                href="#solucao"
+                href="/editais"
                 className="rounded-xl border border-zinc-700 px-6 py-3 text-center font-semibold text-zinc-200 transition hover:border-zinc-400"
               >
-                Entender solução
+                Cadastrar edital
+              </a>
+            </div>
+
+            <div className="mt-4 flex flex-col gap-4 sm:flex-row">
+              <a
+                href="/matches"
+                className="rounded-xl border border-zinc-800 px-6 py-3 text-center font-semibold text-zinc-300 transition hover:border-green-500 hover:text-white"
+              >
+                Ver matchmaking real
+              </a>
+
+              <a
+                href="/dashboard"
+                className="rounded-xl border border-zinc-800 px-6 py-3 text-center font-semibold text-zinc-300 transition hover:border-purple-500 hover:text-white"
+              >
+                Abrir dashboard
               </a>
             </div>
           </div>
@@ -61,9 +95,9 @@ export default function Home() {
           <div className="rounded-3xl border border-zinc-800 bg-zinc-950/80 p-6 shadow-2xl">
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h3 className="text-xl font-semibold">Editais recomendados</h3>
+                <h3 className="text-xl font-semibold">Fluxo da plataforma</h3>
                 <p className="text-sm text-zinc-400">
-                  Resultado baseado no perfil do artista
+                  Cadastre dados reais e gere recomendações
                 </p>
               </div>
 
@@ -75,43 +109,52 @@ export default function Home() {
             <div className="space-y-4">
               {[
                 {
-                  title: "Edital Música Independente MG",
-                  tags: ["música", "juventude", "Minas Gerais"],
-                  score: "92%",
+                  step: "1",
+                  title: "Cadastre artistas",
+                  description:
+                    "Informe nome, cidade, área cultural, descrição e tags do perfil.",
+                  href: "/artistas",
+                  action: "Cadastrar artista",
                 },
                 {
-                  title: "Fomento Audiovisual Periferias",
-                  tags: ["audiovisual", "periferia", "formação"],
-                  score: "81%",
+                  step: "2",
+                  title: "Cadastre editais",
+                  description:
+                    "Registre oportunidades, prazos, instituições, valores e requisitos.",
+                  href: "/editais",
+                  action: "Cadastrar edital",
                 },
                 {
-                  title: "Circuito Cultural Regional",
-                  tags: ["teatro", "circulação", "coletivo"],
-                  score: "74%",
+                  step: "3",
+                  title: "Gere matches",
+                  description:
+                    "O sistema calcula automaticamente o score de compatibilidade.",
+                  href: "/matches",
+                  action: "Ver matches",
                 },
               ].map((item) => (
                 <article
-                  key={item.title}
+                  key={item.step}
                   className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5"
                 >
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex gap-4">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 font-bold text-purple-200">
+                      {item.step}
+                    </div>
+
                     <div>
                       <h4 className="font-semibold">{item.title}</h4>
 
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {item.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="rounded-full bg-purple-500/10 px-3 py-1 text-xs text-purple-200"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                      <p className="mt-2 text-sm leading-6 text-zinc-400">
+                        {item.description}
+                      </p>
 
-                    <div className="rounded-xl bg-green-500/10 px-3 py-2 text-sm font-bold text-green-300">
-                      {item.score}
+                      <a
+                        href={item.href}
+                        className="mt-4 inline-flex rounded-xl bg-zinc-800 px-4 py-2 text-sm font-semibold text-zinc-200 transition hover:bg-purple-500 hover:text-white"
+                      >
+                        {item.action}
+                      </a>
                     </div>
                   </div>
                 </article>
@@ -121,10 +164,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        id="problema"
-        className="border-y border-zinc-800 bg-zinc-950 px-6 py-20"
-      >
+      <section className="border-y border-zinc-800 bg-zinc-950 px-6 py-20">
         <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-3">
           <div>
             <h3 className="text-2xl font-bold">Problema</h3>
@@ -134,15 +174,15 @@ export default function Home() {
             </p>
           </div>
 
-          <div id="solucao">
+          <div>
             <h3 className="text-2xl font-bold">Solução</h3>
             <p className="mt-3 text-zinc-400">
               A plataforma organiza perfis, tags culturais e requisitos dos
-              editais em um sistema simples.
+              editais em um sistema simples e conectado ao banco.
             </p>
           </div>
 
-          <div id="match">
+          <div>
             <h3 className="text-2xl font-bold">Matchmaking</h3>
             <p className="mt-3 text-zinc-400">
               O sistema calcula um score de compatibilidade entre artista e
