@@ -2,6 +2,16 @@ import AppNav from "@/components/AppNav";
 import { prisma } from "@/lib/prisma";
 import { createOpportunity } from "./actions";
 
+type Opportunity = {
+  id: string;
+  title: string;
+  institution: string;
+  value: string;
+  deadline: Date;
+  description: string;
+  tags: string[];
+};
+
 export const runtime = "nodejs";
 
 function formatDate(date: Date) {
@@ -13,11 +23,11 @@ function formatDate(date: Date) {
 }
 
 export default async function EditaisPage() {
-  const opportunities = await prisma.opportunity.findMany({
+  const opportunities = (await prisma.opportunity.findMany({
     orderBy: {
-      createdAt: "desc",
+    createdAt: "desc",
     },
-  });
+  })) as Opportunity[];
 
   return (
     <main className="min-h-screen bg-[#0B0B12] text-white">
@@ -171,7 +181,7 @@ export default async function EditaisPage() {
           </div>
         ) : (
           <div className="grid gap-5 md:grid-cols-3">
-            {opportunities.map((opportunity) => (
+            {opportunities.map((opportunity: Opportunity) => (
               <article
                 key={opportunity.id}
                 className="rounded-3xl border border-zinc-800 bg-zinc-950 p-6"
