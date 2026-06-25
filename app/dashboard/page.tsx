@@ -4,23 +4,42 @@ import { calculateMatchScore } from "@/lib/match-score";
 
 export const runtime = "nodejs";
 
-export default async function DashboardPage() {
-  const [artists, opportunities] = await Promise.all([
-    prisma.artist.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    }),
-    prisma.opportunity.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    }),
-  ]);
+type Artist = {
+  id: string;
+  name: string;
+  tags: string[];
+};
 
-  const generatedMatches = artists
-    .flatMap((artist) =>
-      opportunities.map((opportunity) => {
+type Opportunity = {
+  id: string;
+  title: string;
+  tags: string[];
+};
+
+type GeneratedMatch = {
+  artistId: string;
+  opportunityId: string;
+  artist: string;
+  opportunity: string;
+  score: number;
+};
+
+export default async function DashboardPage() {
+  const artists = (await prisma.artist.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  })) as Artist[];
+
+  const opportunities = (await prisma.opportunity.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  })) as Opportunity[];
+
+  const generatedMatches: GeneratedMatch[] = artists
+    .flatMap((artist: Artist) =>
+      opportunities.map((opportunity: Opportunity) => {
         const result = calculateMatchScore(artist.tags, opportunity.tags);
 
         return {
@@ -32,15 +51,17 @@ export default async function DashboardPage() {
         };
       }),
     )
-    .filter((match) => match.score > 0)
-    .sort((a, b) => b.score - a.score);
+    .filter((match: GeneratedMatch) => match.score > 0)
+    .sort((a: GeneratedMatch, b: GeneratedMatch) => b.score - a.score);
 
   const averageScore =
     generatedMatches.length === 0
       ? 0
       : Math.round(
-          generatedMatches.reduce((sum, match) => sum + match.score, 0) /
-            generatedMatches.length,
+          generatedMatches.reduce(
+            (sum: number, match: GeneratedMatch) => sum + match.score,
+            0,
+          ) / generatedMatches.length,
         );
 
   const recentMatches = generatedMatches.slice(0, 3);
@@ -137,7 +158,7 @@ export default async function DashboardPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {recentMatches.map((match) => (
+                {recentMatches.map((match: GeneratedMatch) => (
                   <article
                     key={`${match.artistId}-${match.opportunityId}`}
                     className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5"
