@@ -2,14 +2,23 @@ import AppNav from "@/components/AppNav";
 import { prisma } from "@/lib/prisma";
 import { createArtist } from "./actions";
 
+type Artist = {
+  id: string;
+  name: string;
+  city: string;
+  area: string;
+  description: string;
+  tags: string[];
+};
+
 export const runtime = "nodejs";
 
 export default async function ArtistsPage() {
-  const artists = await prisma.artist.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const artists = (await prisma.artist.findMany({
+  orderBy: {
+    createdAt: "desc",
+  },
+  })) as Artist[];
 
   return (
     <main className="min-h-screen bg-[#0B0B12] text-white">
