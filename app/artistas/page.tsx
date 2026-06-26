@@ -2,6 +2,10 @@ import AppNav from "@/components/AppNav";
 import { prisma } from "@/lib/prisma";
 import { createArtist } from "./actions";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type Artist = {
   id: string;
   name: string;
@@ -11,46 +15,50 @@ type Artist = {
   tags: string[];
 };
 
-export const runtime = "nodejs";
-
 export default async function ArtistsPage() {
   const artists = (await prisma.artist.findMany({
-  orderBy: {
-    createdAt: "desc",
-  },
+    orderBy: {
+      createdAt: "desc",
+    },
   })) as Artist[];
 
   return (
-    <main className="min-h-screen bg-[#0B0B12] text-white">
+    <main className="min-h-screen text-[#241C15]">
       <AppNav />
 
       <section className="mx-auto max-w-7xl px-6 py-10">
         <div className="mb-8">
-          <p className="text-sm font-medium text-purple-300">
+          <div className="inline-flex rotate-[-1deg] rounded-full border-2 border-[#241C15] bg-[#B85C38] px-4 py-1 text-xs font-black uppercase tracking-[0.25em] text-white shadow-[4px_4px_0_#241C15]">
             Perfis culturais
-          </p>
+          </div>
 
-          <h2 className="mt-2 text-4xl font-bold">Artistas cadastrados</h2>
+          <h2 className="mt-5 max-w-3xl text-5xl font-black leading-tight md:text-6xl">
+            Artistas, coletivos e fazedores de cultura.
+          </h2>
 
-          <p className="mt-3 max-w-2xl text-zinc-400">
-            Cadastre artistas, coletivos e produtores culturais para encontrar
-            editais compatíveis com seus perfis.
+          <p className="mt-4 max-w-2xl text-lg font-semibold leading-8 text-[#4E3B2A]">
+            Cadastre trajetórias culturais para conectar cada artista aos
+            editais mais compatíveis.
           </p>
         </div>
 
-        <section className="mb-10 rounded-3xl border border-zinc-800 bg-zinc-950 p-6">
+        <section className="mb-10 rounded-[2rem] border-4 border-[#241C15] bg-[#F6EAD2] p-6 shadow-[10px_10px_0_#241C15]">
           <div className="mb-6">
-            <h3 className="text-2xl font-bold">Novo artista</h3>
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-[#7A2E3A]">
+              Novo cadastro
+            </p>
 
-            <p className="mt-2 text-sm text-zinc-400">
-              Agora este formulário salva os dados reais no Supabase usando
-              Prisma.
+            <h3 className="mt-2 text-3xl font-black">Novo artista</h3>
+
+            <p className="mt-2 text-sm font-semibold text-[#4E3B2A]">
+              Informe os dados do perfil cultural. As tags serão usadas para
+              calcular os matches com editais.
             </p>
           </div>
 
           <form action={createArtist} className="grid gap-5 md:grid-cols-2">
             <div>
-              <label className="mb-2 block text-sm text-zinc-400">
+              <label className="mb-2 block text-sm font-black uppercase">
                 Nome do artista ou coletivo
               </label>
 
@@ -59,12 +67,12 @@ export default async function ArtistsPage() {
                 type="text"
                 placeholder="Ex: Coletivo Vozes do Morro"
                 required
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-purple-500"
+                className="w-full rounded-2xl border-2 border-[#241C15] bg-white/60 px-4 py-3 text-sm font-semibold text-[#241C15] outline-none placeholder:text-[#8A745B] focus:bg-white"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm text-zinc-400">
+              <label className="mb-2 block text-sm font-black uppercase">
                 Cidade / Estado
               </label>
 
@@ -73,19 +81,19 @@ export default async function ArtistsPage() {
                 type="text"
                 placeholder="Ex: Belo Horizonte - MG"
                 required
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-purple-500"
+                className="w-full rounded-2xl border-2 border-[#241C15] bg-white/60 px-4 py-3 text-sm font-semibold text-[#241C15] outline-none placeholder:text-[#8A745B] focus:bg-white"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm text-zinc-400">
+              <label className="mb-2 block text-sm font-black uppercase">
                 Área cultural
               </label>
 
               <select
                 name="area"
                 required
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white outline-none transition focus:border-purple-500"
+                className="w-full rounded-2xl border-2 border-[#241C15] bg-white/60 px-4 py-3 text-sm font-semibold text-[#241C15] outline-none focus:bg-white"
               >
                 <option value="Música">Música</option>
                 <option value="Teatro">Teatro</option>
@@ -97,7 +105,7 @@ export default async function ArtistsPage() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm text-zinc-400">
+              <label className="mb-2 block text-sm font-black uppercase">
                 Tags culturais
               </label>
 
@@ -106,12 +114,12 @@ export default async function ArtistsPage() {
                 type="text"
                 placeholder="Ex: música, periferia, juventude"
                 required
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-purple-500"
+                className="w-full rounded-2xl border-2 border-[#241C15] bg-white/60 px-4 py-3 text-sm font-semibold text-[#241C15] outline-none placeholder:text-[#8A745B] focus:bg-white"
               />
             </div>
 
             <div className="md:col-span-2">
-              <label className="mb-2 block text-sm text-zinc-400">
+              <label className="mb-2 block text-sm font-black uppercase">
                 Descrição do perfil
               </label>
 
@@ -120,14 +128,14 @@ export default async function ArtistsPage() {
                 placeholder="Descreva o histórico, atuação e objetivos culturais do artista."
                 rows={4}
                 required
-                className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-purple-500"
+                className="w-full rounded-2xl border-2 border-[#241C15] bg-white/60 px-4 py-3 text-sm font-semibold text-[#241C15] outline-none placeholder:text-[#8A745B] focus:bg-white"
               />
             </div>
 
             <div className="md:col-span-2">
               <button
                 type="submit"
-                className="rounded-xl bg-purple-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-purple-400"
+                className="rounded-2xl border-2 border-[#241C15] bg-[#B85C38] px-7 py-4 text-sm font-black uppercase text-white shadow-[6px_6px_0_#241C15] transition hover:-translate-y-1 hover:shadow-[8px_8px_0_#241C15]"
               >
                 Cadastrar artista
               </button>
@@ -136,35 +144,39 @@ export default async function ArtistsPage() {
         </section>
 
         {artists.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-zinc-700 bg-zinc-950 p-10 text-center">
-            <h3 className="text-2xl font-bold">Nenhum artista cadastrado</h3>
+          <div className="rounded-[2rem] border-4 border-dashed border-[#241C15] bg-[#F6EAD2] p-10 text-center shadow-[8px_8px_0_#241C15]">
+            <h3 className="text-3xl font-black">Nenhum artista cadastrado</h3>
 
-            <p className="mt-3 text-zinc-400">
+            <p className="mt-3 font-semibold text-[#4E3B2A]">
               Cadastre o primeiro artista usando o formulário acima.
             </p>
           </div>
         ) : (
-          <div className="grid gap-5 md:grid-cols-3">
-            {artists.map((artist) => (
+          <div className="grid gap-6 md:grid-cols-3">
+            {artists.map((artist: Artist) => (
               <article
                 key={artist.id}
-                className="rounded-3xl border border-zinc-800 bg-zinc-950 p-6"
+                className="rounded-[2rem] border-4 border-[#241C15] bg-[#F6EAD2] p-6 shadow-[8px_8px_0_#241C15] transition hover:-translate-y-1 hover:shadow-[10px_10px_0_#241C15]"
               >
-                <p className="text-sm text-zinc-400">{artist.city}</p>
+                <p className="w-fit rounded-full border-2 border-[#241C15] bg-[#D89B2B] px-3 py-1 text-xs font-black uppercase shadow-[3px_3px_0_#241C15]">
+                  {artist.city}
+                </p>
 
-                <h3 className="mt-2 text-2xl font-bold">{artist.name}</h3>
+                <h3 className="mt-5 text-3xl font-black">{artist.name}</h3>
 
-                <p className="mt-1 text-purple-300">{artist.area}</p>
+                <p className="mt-2 text-sm font-black uppercase text-[#B85C38]">
+                  {artist.area}
+                </p>
 
-                <p className="mt-4 text-sm leading-6 text-zinc-400">
+                <p className="mt-4 text-sm font-semibold leading-7 text-[#4E3B2A]">
                   {artist.description}
                 </p>
 
                 <div className="mt-5 flex flex-wrap gap-2">
-                  {artist.tags.map((tag) => (
+                  {artist.tags.map((tag: string) => (
                     <span
                       key={tag}
-                      className="rounded-full bg-purple-500/10 px-3 py-1 text-xs text-purple-200"
+                      className="rounded-full border-2 border-[#241C15] bg-[#5D6B3F] px-3 py-1 text-xs font-black uppercase text-white shadow-[2px_2px_0_#241C15]"
                     >
                       {tag}
                     </span>
