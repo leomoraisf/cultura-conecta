@@ -3,6 +3,7 @@ const navItems = [
   { label: "Painel", href: "/dashboard" },
   { label: "Artistas", href: "/artistas" },
   { label: "Editais", href: "/editais" },
+  { label: "PDF", href: "/importar-edital" },
   { label: "Matches", href: "/matches" },
 ];
 
